@@ -1,5 +1,6 @@
 FROM docker.io/library/node:18-alpine AS builder
 WORKDIR /build
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 COPY package.json package-lock.json tsconfig.json ./
 RUN npm ci

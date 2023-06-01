@@ -1,14 +1,14 @@
 import * as process from 'node:process';
-import {Bot, session} from 'grammy';
-import {config as dotenv} from 'dotenv';
-import {FileAdapter} from '@grammyjs/storage-file';
-import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
-import {html as format} from 'telegram-format';
-import {MenuMiddleware} from 'grammy-inline-menu';
-import {i18n} from '../translation.js';
-import {danceWithFairies, fightDragons} from '../magic.js';
-import {menu} from './menu/index.js';
-import type {MyContext, Session} from './my-context.js';
+import { Bot, session } from 'grammy';
+import { config as dotenv } from 'dotenv';
+import { FileAdapter } from '@grammyjs/storage-file';
+import { generateUpdateMiddleware } from 'telegraf-middleware-console-time';
+import { html as format } from 'telegram-format';
+import { MenuMiddleware } from 'grammy-inline-menu';
+import { i18n } from '../translation.js';
+import { menu } from './menu/index.js';
+import type { MyContext, Session } from './my-context.js';
+import { tryScrapping } from '../magic.js';
 
 dotenv(); // Load from .env file
 const token = process.env['BOT_TOKEN'];
@@ -32,16 +32,25 @@ if (process.env['NODE_ENV'] !== 'production') {
 
 bot.command('help', async ctx => ctx.reply(ctx.t('help')));
 
+
+let trackingPromise: Promise<void> | undefined;
+
+
 bot.command('magic', async ctx => {
-	const combatResult = fightDragons();
-	const fairyThoughts = danceWithFairies();
+	let callback = (value: string) => {
+		if (ctx.from) {
+			console.log(value);
+			bot.api.sendMessage(ctx.from.id, value);
+		}
+	};
 
-	let text = '';
-	text += combatResult;
-	text += '\n\n';
-	text += fairyThoughts;
+	if (!trackingPromise) {
+		trackingPromise = tryScrapping(callback);
+		ctx.reply('started tracking value');
+	} else
+		ctx.reply('already tracking value');
 
-	return ctx.reply(text);
+	return ctx.reply('sup');
 });
 
 bot.command('html', async ctx => {
@@ -49,7 +58,7 @@ bot.command('html', async ctx => {
 	text += format.bold('Some');
 	text += ' ';
 	text += format.spoiler('HTML');
-	await ctx.reply(text, {parse_mode: format.parse_mode});
+	await ctx.reply(text, { parse_mode: format.parse_mode });
 });
 
 const menuMiddleware = new MenuMiddleware('/', menu);
@@ -66,11 +75,11 @@ bot.catch(error => {
 export async function start(): Promise<void> {
 	// The commands you set here will be shown as /commands like /start or /magic in your telegram client.
 	await bot.api.setMyCommands([
-		{command: 'start', description: 'open the menu'},
-		{command: 'magic', description: 'do magic'},
-		{command: 'html', description: 'some html _mode example'},
-		{command: 'help', description: 'show the help'},
-		{command: 'settings', description: 'open the settings'},
+		{ command: 'start', description: 'open the menu' },
+		{ command: 'magic', description: 'do magic' },
+		// {command: 'html', description: 'some html _mode example'},
+		// {command: 'help', description: 'show the help'},
+		// {command: 'settings', description: 'open the settings'},
 	]);
 
 	await bot.start({
