@@ -27,10 +27,12 @@ export async function tryScrapping(callback: any): Promise<void> {
 			const UA = userAgent || USER_AGENT;
 
 			browser =
-			//  await puppeteer.connect({
-			// 	browserWSEndpoint: `wss://chrome.browserless.io?token=f5b5c341-13ab-4b1e-8a35-ff2ac5676a2d&headless=false`,
-			// });
-			 await puppeteer.launch();
+				//  await puppeteer.connect({
+				// 	browserWSEndpoint: `wss://chrome.browserless.io?token=f5b5c341-13ab-4b1e-8a35-ff2ac5676a2d&headless=false`,
+				// });
+				await puppeteer.launch({
+					args: ['--no-sandbox']
+				});
 			const page = await browser.newPage();
 			//Randomize viewport size
 			await page.setViewport({
