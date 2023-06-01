@@ -88,7 +88,10 @@ export async function tryScrapping(callback: any): Promise<void> {
 
 				await setTimeout(500);
 				if (await page.$('input[name="save"]') !== null) {
-					console.log('found');
+					console.log('found');	
+					await page.select('#centre', '56#93');
+					await setTimeout(500);
+					await page.select('#category', 'Normal');
 					await page.click('input[name="save"]');
 				}
 				else
