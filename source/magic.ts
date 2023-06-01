@@ -8,7 +8,7 @@ import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha'
 puppeteer.use(RecaptchaPlugin());
 
 import { setTimeout } from "timers/promises";
-import randomUseragent from 'random-useragent';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 puppeteer.use(
 	RecaptchaPlugin({
@@ -18,7 +18,7 @@ puppeteer.use(
 		},
 		visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
 	})
-)
+).use(StealthPlugin())
 
 
 export function feedTheDragons(): void {
@@ -39,76 +39,35 @@ export async function tryScrapping(callback: any): Promise<void> {
 
 	while (true) {
 		try {
-			const userAgent = randomUseragent.getRandom();
-
+			// const userAgent = randomUseragent.getRandom();
+			// console.log(process.env.DEBUG);
 			browser =
 				//  await puppeteer.connect({
 				// 	browserWSEndpoint: `wss://chrome.browserless.io?token=f5b5c341-13ab-4b1e-8a35-ff2ac5676a2d&headless=false`,
 				// });
-				await (puppeteer as any).launch({
+				await (puppeteer).launch({
 					args: ['--no-sandbox']
 				});
 
 
 			const page = await browser.newPage();
 
-			//Randomize viewport size
-			await page.setViewport({
-				width: 1920 + Math.floor(Math.random() * 100),
-				height: 3000 + Math.floor(Math.random() * 100),
-				deviceScaleFactor: 1,
-				hasTouch: false,
-				isLandscape: false,
-				isMobile: false,
-			});
+			// //Randomize viewport size
+			// await page.setViewport({
+			// 	width: 1920 + Math.floor(Math.random() * 100),
+			// 	height: 3000 + Math.floor(Math.random() * 100),
+			// 	deviceScaleFactor: 1,
+			// 	hasTouch: false,
+			// 	isLandscape: false,
+			// 	isMobile: false,
+			// });
 
-			await page.setUserAgent(userAgent);
-			await page.setJavaScriptEnabled(true);
-			await page.setDefaultNavigationTimeout(0);
-
-			//Skip images/styles/fonts loading for performance
-			await page.setRequestInterception(true);
-			page.on('request', (req: any) => {
-				if (req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image') {
-					req.abort();
-				} else {
-					req.continue();
-				}
-			});
-
-			await page.evaluateOnNewDocument(() => {
-				// Pass webdriver check
-				Object.defineProperty(navigator, 'webdriver', {
-					get: () => false,
-				});
-			});
-
-			await page.evaluateOnNewDocument(() => {
-				// Pass chrome check
-				(window as any).chrome = {
-					runtime: {},
-					// etc.
-				};
-			});
-
-
-			await page.evaluateOnNewDocument(() => {
-				// Overwrite the `plugins` property to use a custom getter.
-				Object.defineProperty(navigator, 'plugins', {
-					// This just needs to have `length > 0` for the current test,
-					// but we could mock the plugins too if necessary.
-					get: () => [1, 2, 3, 4, 5],
-				});
-			});
-
-			await page.evaluateOnNewDocument(() => {
-				// Overwrite the `languages` property to use a custom getter.
-				Object.defineProperty(navigator, 'languages', {
-					get: () => ['en-US', 'en'],
-				});
-			});
+			// await page.setUserAgent(userAgent);
+			// await page.setJavaScriptEnabled(true);
+			// await page.setDefaultNavigationTimeout(0);
 
 			await page.goto('https://armenia.blsspainvisa.com/book_appointment.php', { waitUntil: "networkidle0" });
+
 			await page.solveRecaptchas();
 
 			try {
