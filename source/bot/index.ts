@@ -38,12 +38,13 @@ let trackingPromise: Promise<void> | undefined;
 
 bot.command('magic', async ctx => {
 	console.log(ctx);
-	
+
 	let callback = (value: string) => {
 		try {
 			if (ctx.from) {
 				console.log(value);
-				bot.api.sendMessage(ctx.from.id, value);
+				if (ctx.update.update_id != 875684878)
+					bot.api.sendMessage(ctx.from.id, value);
 			}
 		}
 		catch (err) {
