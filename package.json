@@ -5,6 +5,7 @@
 	"scripts": {
 		"build": "tsc --sourceMap",
 		"start": "node --enable-source-maps dist/index.js",
+		"heroku-postbuild": "mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
 		"test": "tsc --sourceMap && xo && ava"
 	},
 	"type": "module",
