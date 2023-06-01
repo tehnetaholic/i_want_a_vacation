@@ -17,6 +17,7 @@ puppeteer.use(
 			token: 'c8e7c879f034cab8fac5db7b4bb6873a' // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
 		},
 		solveScoreBased: true,
+		solveInactiveChallenges: true,
 		visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
 	})
 ).use(StealthPlugin())
@@ -84,10 +85,12 @@ export async function tryScrapping(callback: any): Promise<void> {
 				await page.focus('#email');
 				await page.keyboard.type('abc@example.com');
 				await page.click('input[name="save"]');
-				
+
 				await setTimeout(500);
 				if (await page.$('input[name="save"]') !== null) {
 					console.log('found');
+
+					await page.solveRecaptchas();
 					await page.click('input[name="save"]');
 				}
 				else
