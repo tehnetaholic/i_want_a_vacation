@@ -84,6 +84,14 @@ export async function tryScrapping(callback: any): Promise<void> {
 				await page.focus('#email');
 				await page.keyboard.type('abc@example.com');
 				await page.click('input[name="save"]');
+				
+				await setTimeout(500);
+				if (await page.$('input[name="save"]') !== null) {
+					console.log('found');
+					await page.click('input[name="save"]');
+				}
+				else
+					console.log('not found');
 
 				await page.waitForSelector('button[name="agree"]');
 				await setTimeout(500);
