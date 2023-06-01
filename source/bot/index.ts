@@ -37,7 +37,6 @@ let trackingPromise: Promise<void> | undefined;
 
 
 bot.command('magic', async ctx => {
-	console.log(ctx);
 
 	let callback = async (value: string) => {
 		try {
@@ -54,10 +53,8 @@ bot.command('magic', async ctx => {
 		}
 	};
 
-	console.log(callback );
-	console.log(tryScrapping);
 	if (!trackingPromise) {
-		// trackingPromise = tryScrapping(callback);
+		trackingPromise = tryScrapping(callback);
 		ctx.reply('started tracking value');
 	} else
 		ctx.reply('already tracking value');
