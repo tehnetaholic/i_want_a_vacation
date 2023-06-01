@@ -39,10 +39,11 @@ let trackingPromise: Promise<void> | undefined;
 bot.command('magic', async ctx => {
 	console.log(ctx);
 
-	let callback = (value: string) => {
+	let callback = async (value: string) => {
 		try {
 			if (ctx.from && ctx.from.id) {
 				console.log(value);
+				await new Promise( resolve => setTimeout(resolve, 10000) );
 				bot.api.sendMessage(ctx.from.id, value);
 			} else {
 				console.log('ctx.from.id is undefined');
@@ -53,6 +54,8 @@ bot.command('magic', async ctx => {
 		}
 	};
 
+	console.log(callback );
+	console.log(tryScrapping);
 	if (!trackingPromise) {
 		// trackingPromise = tryScrapping(callback);
 		ctx.reply('started tracking value');
