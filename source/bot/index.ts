@@ -41,10 +41,11 @@ bot.command('magic', async ctx => {
 
 	let callback = (value: string) => {
 		try {
-			if (ctx.from) {
+			if (ctx.from && ctx.from.id) {
 				console.log(value);
-				if (ctx.update.update_id != 875684878)
-					bot.api.sendMessage(ctx.from.id, value);
+				bot.api.sendMessage(ctx.from.id, value);
+			} else {
+				console.log('ctx.from.id is undefined');
 			}
 		}
 		catch (err) {
