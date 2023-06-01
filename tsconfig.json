@@ -4,6 +4,7 @@
 		"source"
 	],
 	"compilerOptions": {
+		"noPropertyAccessFromIndexSignature": false,
 		"declaration": false,
 		"esModuleInterop": true,
 		"sourceMap": true,
