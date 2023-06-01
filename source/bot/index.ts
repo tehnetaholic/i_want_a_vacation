@@ -38,9 +38,14 @@ let trackingPromise: Promise<void> | undefined;
 
 bot.command('magic', async ctx => {
 	let callback = (value: string) => {
-		if (ctx.from) {
-			console.log(value);
-			bot.api.sendMessage(ctx.from.id, value);
+		try {
+			if (ctx.from) {
+				console.log(value);
+				bot.api.sendMessage(ctx.from.id, value);
+			}
+		}
+		catch (err) {
+			console.error(err);
 		}
 	};
 
