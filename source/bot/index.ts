@@ -54,7 +54,7 @@ bot.command('magic', async ctx => {
 	};
 
 	if (!trackingPromise) {
-		trackingPromise = tryScrapping(callback);
+		// trackingPromise = tryScrapping(callback);
 		ctx.reply('started tracking value');
 	} else
 		ctx.reply('already tracking value');
