@@ -16,6 +16,7 @@ puppeteer.use(
 			id: '2captcha',
 			token: 'c8e7c879f034cab8fac5db7b4bb6873a' // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
 		},
+		solveScoreBased: true,
 		visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
 	})
 ).use(StealthPlugin())
