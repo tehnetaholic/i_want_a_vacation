@@ -43,7 +43,7 @@ bot.command('magic', async ctx => {
 			if (ctx.from && ctx.from.id) {
 				console.log(value);
 				await new Promise( resolve => setTimeout(resolve, 10000) );
-				bot.api.sendMessage(ctx.from.id, value);
+				// bot.api.sendMessage(ctx.from.id, value);
 			} else {
 				console.log('ctx.from.id is undefined');
 			}
