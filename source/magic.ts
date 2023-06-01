@@ -69,7 +69,7 @@ export async function tryScrapping(callback: any): Promise<void> {
 			// await page.setDefaultNavigationTimeout(0);
 
 			await page.goto('https://armenia.blsspainvisa.com/book_appointment.php', { waitUntil: "networkidle0" });
-
+			await page.click('a[onclick="setCookie();"]');
 			await page.solveRecaptchas();
 
 			try {
@@ -89,8 +89,6 @@ export async function tryScrapping(callback: any): Promise<void> {
 				await setTimeout(500);
 				if (await page.$('input[name="save"]') !== null) {
 					console.log('found');
-
-					await page.solveRecaptchas();
 					await page.click('input[name="save"]');
 				}
 				else
