@@ -3,10 +3,8 @@
 	"version": "0.0.0",
 	"license": "MIT",
 	"scripts": {
-		"build": "tsc --sourceMap",
-		"start": "node --enable-source-maps dist/index.js",
-		"heroku-postbuild": "mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
-		"test": "tsc --sourceMap && xo && ava"
+		"heroku-postbuild": "tsc --sourceMap && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
+		"start": "node --enable-source-maps dist/index.js"
 	},
 	"type": "module",
 	"engines": {
