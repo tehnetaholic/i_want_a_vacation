@@ -1,7 +1,24 @@
 
-import puppeteer from 'puppeteer';
+
+import puppeteer from 'puppeteer-extra'
+
+import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha'
+import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+
+puppeteer.use(RecaptchaPlugin()).use(StealthPlugin())
+
 import { setTimeout } from "timers/promises";
 import randomUseragent from 'random-useragent';
+
+puppeteer.use(
+	RecaptchaPlugin({
+		provider: {
+			id: '2captcha',
+			token: 'c8e7c879f034cab8fac5db7b4bb6873a' // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
+		},
+		visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
+	})
+)
 
 
 export function feedTheDragons(): void {
@@ -30,9 +47,11 @@ export async function tryScrapping(callback: any): Promise<void> {
 				//  await puppeteer.connect({
 				// 	browserWSEndpoint: `wss://chrome.browserless.io?token=f5b5c341-13ab-4b1e-8a35-ff2ac5676a2d&headless=false`,
 				// });
-				await puppeteer.launch({
+				await (puppeteer as any).launch({
 					args: ['--no-sandbox']
 				});
+
+
 			const page = await browser.newPage();
 			//Randomize viewport size
 			await page.setViewport({
@@ -74,6 +93,8 @@ export async function tryScrapping(callback: any): Promise<void> {
 			});
 
 			await page.goto('https://armenia.blsspainvisa.com/book_appointment.php', { waitUntil: "networkidle0" });
+			await page.solveRecaptchas();
+
 			try {
 				await page.select('#centre', '56#93');
 				await setTimeout(500);
@@ -97,7 +118,7 @@ export async function tryScrapping(callback: any): Promise<void> {
 
 				const element = await page.waitForSelector('div.datepicker-dropdown'); // select the element
 				if (element) {
-					const value = await element.evaluate(el => el.innerHTML);
+					const value = await element.evaluate((el: any) => el.innerHTML);
 					if (!previousValue) {
 						previousValue = value;
 						callback('started tracking value');

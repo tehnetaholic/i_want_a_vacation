@@ -4,9 +4,9 @@
 	"license": "MIT",
 	"scripts": {
 		"heroku-postbuild": "tsc --sourceMap && mkdir ./.cache && mv /app/.cache/puppeteer ./.cache",
-		"start": "node --enable-source-maps dist/index.js"
+		"start": "node --enable-source-maps dist/index.js",
+		"start:dev": "tsc --sourceMap && node --enable-source-maps dist/index.js"
 	},
-	"type": "module",
 	"engines": {
 		"node": ">=18"
 	},
@@ -19,6 +19,7 @@
 		"grammy-inline-menu": "^8.0.0",
 		"puppeteer": "^20.5.0",
 		"puppeteer-extra": "^3.3.6",
+		"puppeteer-extra-plugin-recaptcha": "^3.6.8",
 		"puppeteer-extra-plugin-stealth": "^2.11.2",
 		"random-useragent": "^0.5.0",
 		"telegraf-middleware-console-time": "^2.0.0",
