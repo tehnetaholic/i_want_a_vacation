@@ -3,9 +3,9 @@
 import puppeteer from 'puppeteer-extra'
 
 import RecaptchaPlugin from 'puppeteer-extra-plugin-recaptcha'
-import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+//import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 
-puppeteer.use(RecaptchaPlugin()).use(StealthPlugin())
+puppeteer.use(RecaptchaPlugin());
 
 import { setTimeout } from "timers/promises";
 import randomUseragent from 'random-useragent';
@@ -36,12 +36,10 @@ let previousValue: string = '';
 export async function tryScrapping(callback: any): Promise<void> {
 
 	let browser = null;
-	const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
 
 	while (true) {
 		try {
 			const userAgent = randomUseragent.getRandom();
-			const UA = userAgent || USER_AGENT;
 
 			browser =
 				//  await puppeteer.connect({
@@ -53,6 +51,7 @@ export async function tryScrapping(callback: any): Promise<void> {
 
 
 			const page = await browser.newPage();
+
 			//Randomize viewport size
 			await page.setViewport({
 				width: 1920 + Math.floor(Math.random() * 100),
@@ -63,16 +62,33 @@ export async function tryScrapping(callback: any): Promise<void> {
 				isMobile: false,
 			});
 
-			await page.setUserAgent(UA);
+			await page.setUserAgent(userAgent);
 			await page.setJavaScriptEnabled(true);
 			await page.setDefaultNavigationTimeout(0);
 
+			//Skip images/styles/fonts loading for performance
+			await page.setRequestInterception(true);
+			page.on('request', (req: any) => {
+				if (req.resourceType() == 'stylesheet' || req.resourceType() == 'font' || req.resourceType() == 'image') {
+					req.abort();
+				} else {
+					req.continue();
+				}
+			});
 
 			await page.evaluateOnNewDocument(() => {
 				// Pass webdriver check
 				Object.defineProperty(navigator, 'webdriver', {
 					get: () => false,
 				});
+			});
+
+			await page.evaluateOnNewDocument(() => {
+				// Pass chrome check
+				(window as any).chrome = {
+					runtime: {},
+					// etc.
+				};
 			});
 
 
