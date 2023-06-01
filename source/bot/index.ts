@@ -42,7 +42,7 @@ bot.command('magic', async ctx => {
 		try {
 			if (ctx.from && ctx.from.id) {
 				console.log(value);
-				await new Promise( resolve => setTimeout(resolve, 10000) );
+				await new Promise(resolve => setTimeout(resolve, 10000));
 				// bot.api.sendMessage(ctx.from.id, value);
 			} else {
 				console.log('ctx.from.id is undefined');
@@ -55,11 +55,11 @@ bot.command('magic', async ctx => {
 
 	if (!trackingPromise) {
 		trackingPromise = tryScrapping(callback);
-		ctx.reply('started tracking value');
+		// ctx.reply('started tracking value');
 	} else
-		ctx.reply('already tracking value');
+		// ctx.reply('already tracking value');
 
-	return ctx.reply('sup');
+	// return ctx.reply('sup');
 });
 
 bot.command('html', async ctx => {

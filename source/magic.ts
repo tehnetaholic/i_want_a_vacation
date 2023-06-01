@@ -121,7 +121,7 @@ export async function tryScrapping(callback: any): Promise<void> {
 					const value = await element.evaluate((el: any) => el.innerHTML);
 					if (!previousValue) {
 						previousValue = value;
-						callback('started tracking value');
+						callback('remembered value');
 					}
 
 					if (previousValue !== value) {
